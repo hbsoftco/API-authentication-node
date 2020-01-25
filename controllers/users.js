@@ -1,10 +1,7 @@
-const { signUpValidation } = require('../validators/signUpValidator');
-
 module.exports = {
     signUp: async (req, res, next) => {
-        console.log('ok');
-
-
+        console.log(req.value.body);
+        
     },
 
     signIn: async (req, res, next) => {

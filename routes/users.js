@@ -1,5 +1,5 @@
 const router = require('express-promise-router')();
-
+// Validators
 const { signUpValidation, schema } = require('../validators/signUpValidator');
 // Controllers
 const UserController = require('../controllers/users');

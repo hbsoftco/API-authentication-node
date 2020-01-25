@@ -9,11 +9,13 @@ module.exports = {
             if (error)
                 return res.status(400).json(error);
 
-            if (!value) {
-                value = {};
+            if (!req.value) {
+                req.value = {};
             }
 
-            res.json(value);
+            req.value['body'] = value;
+
+            res.json(req.value['body']);
             next();
         }
 
@@ -24,12 +26,12 @@ module.exports = {
                 .messages({
                     "string.empty": `این فیلد نمی‌تواند خالی باشد!`,
                     "string.base": `"username" should be a type of 'text'`,
-                    "any.required": `"username" این فیلد اجباری است!`
+                    "any.required": `این فیلد اجباری است!`
                 }),
             password: Joi.string().min(4).required().messages({
                 "string.base": `"username" should be a type of 'text'`,
                 "string.empty": `این فیلد نمی‌تواند خالی باشد!`,
-                "any.required": `"username" این فیلد اجباری است!`
+                "any.required": `این فیلد اجباری است!`
             }),
         })
     }
