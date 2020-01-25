@@ -1,13 +1,37 @@
 const Joi = require("@hapi/joi");
 
-const signUpValidation = (data) => {
+module.exports = {
 
-    const schema = Joi.object({
-        email: Joi.string().min(4).required().email(),
-        password: Joi.string().min(4).required()
-    });
+    signUpValidation: (schema) => {
+        return (req, res, next) => {
+            let { error, value } = schema.validate(req.body);
 
-    return schema.validate(data);
+            if (error)
+                return res.status(400).json(error);
+
+            if (!value) {
+                value = {};
+            }
+
+            res.json(value);
+            next();
+        }
+
+    },
+    schema: {
+        authSchema: Joi.object({
+            email: Joi.string().min(4).required().email()
+                .messages({
+                    "string.empty": `این فیلد نمی‌تواند خالی باشد!`,
+                    "string.base": `"username" should be a type of 'text'`,
+                    "any.required": `"username" این فیلد اجباری است!`
+                }),
+            password: Joi.string().min(4).required().messages({
+                "string.base": `"username" should be a type of 'text'`,
+                "string.empty": `این فیلد نمی‌تواند خالی باشد!`,
+                "any.required": `"username" این فیلد اجباری است!`
+            }),
+        })
+    }
 
 }
-module.exports.signUpValidation = signUpValidation;
