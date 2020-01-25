@@ -1,5 +1,5 @@
 const express = require('express');
-const morgan = require('morgan');
+const logger = require('morgan');
 const bodyParser = require('body-parser');
 
 // Initialize the app
@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middllwares
-app.use(morgan('dev'));
+app.use(logger('dev'));
 app.use(bodyParser.json());
 
 // Routes
