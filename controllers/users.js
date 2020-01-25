@@ -2,13 +2,18 @@ const { signUpValidation } = require('../validators/signUpValidator');
 
 module.exports = {
     signUp: async (req, res, next) => {
-        let result = signUpValidation(req.body);
+        // Check inputs for validation
+        let { error, value } = signUpValidation(req.body);
 
-        res.json(result);
+        if (error)
+            res.json(error)
 
+        if (!value) {
+            value = {}
+        }
 
-        console.log('SignUp UserController');
-
+        res.json(value);
+        next();
 
     },
 

@@ -7,16 +7,7 @@ const signUpValidation = (data) => {
         password: Joi.string().min(4).required()
     });
 
-
-    const { error, value } = schema.validate(data);
-    
-    if (error)
-        return error;
-
-    if (!value)
-        return value = {};
-        
-    return value;
+    return schema.validate(data);
 
 }
 module.exports.signUpValidation = signUpValidation;
