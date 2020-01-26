@@ -1,6 +1,22 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+// Bring in the database object
+const config = require('./config/database');
+
+// Mongodb config
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
+// Connect with the database
+mongoose.connect(config.database, { useNewUrlParser: true })
+    .then(() => {
+        console.log('database connect successfully ' + config.database);
+    }).catch(err => {
+        console.log(err);
+    });
 
 // Initialize the app
 const app = express();
