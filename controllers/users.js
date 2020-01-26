@@ -1,3 +1,4 @@
+const JWT = require('jsonwebtoken');
 const User = require('../models/User');
 
 module.exports = {
@@ -17,6 +18,11 @@ module.exports = {
                     message
                 });
             } else {
+                return res.json(user);
+                // JWT.sign({
+                //     iss:'codeworker',
+                //     sub:
+                // }, '');
                 return res.json({
                     success: true,
                     message: "User registration successful."
