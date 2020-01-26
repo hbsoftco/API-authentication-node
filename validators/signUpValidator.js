@@ -14,8 +14,6 @@ module.exports = {
             }
 
             req.value['body'] = value;
-
-            res.json(req.value['body']);
             next();
         }
 
