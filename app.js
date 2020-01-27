@@ -3,6 +3,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 // Bring in the database object
 const config = require('./config/database');
@@ -28,6 +29,12 @@ const PORT = process.env.PORT || 5000;
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(cors());
+// Passport Middlewares
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Bring in the passport authenticaion strategy
+require('./config/passport')(passport);
 
 // Routes
 app.use('/users', require('./routes/users'))
