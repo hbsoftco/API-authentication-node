@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/User');
+const { secret } = require('../config/database');
 
 module.exports = {
     signUp: async (req, res, next) => {
@@ -18,13 +19,16 @@ module.exports = {
                     message
                 });
             } else {
-                return res.json(user);
-                // JWT.sign({
-                //     iss:'codeworker',
-                //     sub:
-                // }, '');
+                const token = JWT.sign({
+                    type: "user",
+                    data: user
+                }, secret, {
+                    expiresIn: 604800 // for 1 week timein milliseconds
+                });
+
                 return res.json({
                     success: true,
+                    token: 'JWT ' + token,
                     message: "User registration successful."
                 })
             }

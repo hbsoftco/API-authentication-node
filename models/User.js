@@ -18,6 +18,20 @@ const UserSchema = mongoose.Schema({
 
 UserSchema.plugin(uniqueValidator);
 
+// Before save we can manage data like this
+/*
+UserSchema.pre('save', async (next) => {
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const passwprdHash = await bcrypt.hash(this.password, salt);
+        this.password = passwprdHash;
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+*/
+
 // Create model and export that
 const User = module.exports = mongoose.model('User', UserSchema);
 
@@ -26,11 +40,9 @@ module.exports.getUserById = (id, callback) => {
     User.findById(id, callback);
 }
 
-// Find the user bu Its username
-module.exports.getUserByUsername = (username, callback) => {
-    const query = {
-        username: username
-    }
+// Find the user by Its username
+module.exports.getUserByUsername = (email, callback) => {
+    const query = { email }
     User.findOne(query, callback);
 }
 
