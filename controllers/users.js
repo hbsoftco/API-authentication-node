@@ -60,7 +60,21 @@ module.exports = {
     },
 
     signIn: async (req, res, next) => {
-        console.log('signIn UserController');
+
+        // Generate the token
+        const token = JWT.sign({
+            type: "user",
+            data: req.user
+        }, secret, {
+            expiresIn: 604800 // for 1 week timein milliseconds
+        });
+
+        res.status(200).json({
+            success: true,
+            token: 'JWT ' + token,
+            message: "User logged in successfully.",
+            user: req.user
+        });
     },
 
     secret: async (req, res, next) => {
@@ -173,13 +187,15 @@ module.exports = {
 
     },
 
-
     index: async (req, res, next) => {
 
         try {
 
             let todos = await Todo.findAll({
-                attributes: ["name", "priority", "description", "duedate"]
+                attributes: ["name", "priority", "description", "duedate"],
+                order: [
+                    ['name', 'ASC']
+                ]
             });
 
             res.json({
