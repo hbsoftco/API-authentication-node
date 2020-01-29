@@ -4,6 +4,13 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+// Initialize the app
+const app = express();
+// Defining the PORT
+const PORT = process.env.PORT || 5000;
 
 // Bring in the database object
 const config = require('./config/database');
@@ -20,11 +27,6 @@ mongoose.connect(config.database, { useNewUrlParser: true })
         console.log(err);
     });
 
-// Initialize the app
-const app = express();
-// Defining the PORT
-const PORT = process.env.PORT || 5000;
-
 // Middllwares
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -32,6 +34,25 @@ app.use(cors());
 // Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Swagger
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: 'API Authentication',
+            description: 'Customer API Information',
+            contact: {
+                name: 'HBSOFTCO'
+            },
+            servers: ['http://localhost:5000/']
+        }
+    },
+    // ['.routes/*.js']
+    apis: ['app.js']
+}
+
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Bring in the passport authenticaion strategy
 require('./config/passport')(passport);

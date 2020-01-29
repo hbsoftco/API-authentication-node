@@ -1,0 +1,87 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "API Authentication with node",
+        "description": "This is a sample server Petstore server.",
+        "version": "1.0.0"
+    },
+    "produces": [
+        "application/json"
+    ],
+    "host": "localhost:5000",
+    "basePath": "/v1",
+    "paths": {
+        "/users": {
+            "post": {
+                "summary": "Create user",
+                "description": "This can only be done by the logged in user.",
+                "x-swagger-router-controller": "User",
+                "tags": [
+                    "User"
+                ],
+                "operationId": "createUser",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Created user object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/users/secret": {
+            "get": {
+                "summary": "Secret ",
+                "description": "",
+                "x-swagger-router-controller": "User",
+                "tags": [
+                    "User"
+                ],
+                "operationId": "createUsersWithArrayInput",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "List of user object",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "xml": {
+                "name": "User"
+            }
+        }
+    }
+}
