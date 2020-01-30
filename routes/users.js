@@ -12,6 +12,7 @@ const passportJWT = passport.authenticate('jwt', { session: false });
 const passportGoogleToken = passport.authenticate('googleToken', { session: false });
 const passportFacebookToken = passport.authenticate('facebookToken', { session: false });
 const passportGithubToken = passport.authenticate('githubToken', { session: false });
+const passportGitlabToken = passport.authenticate('gitlabToken', { session: false });
 
 // Validators
 const { signUpValidation, schema } = require('../validators/signUpValidator');
@@ -29,5 +30,6 @@ router.route('/signin').post(signUpValidation(schema.authSchema), passportSignIn
 router.route('/oauth/google').post(passportGoogleToken, UserController.googleOAuth);
 router.route('/oauth/facebook').post(passportFacebookToken, UserController.facebookOAuth);
 router.route('/oauth/github').post(passportGithubToken, UserController.githubOAuth);
+router.route('/oauth/gitlab').post(passportGitlabToken, UserController.gitlabOAuth);
 
 module.exports = router;
