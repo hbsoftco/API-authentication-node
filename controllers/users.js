@@ -40,20 +40,16 @@ module.exports = {
             });
         }
 
-        const salt = await bcrypt.genSalt(10);
+        // Hash the password
+        const salt = await bcrypt.genSalt(10);        
         const passwprdHash = await bcrypt.hash(password, salt);
-        password = passwprdHash;
-
-        console.log(password);
-        return;
-
 
         // Create new user
         const newUser = new User({
             method: 'local',
             local: {
                 email: email,
-                password: password
+                password: passwprdHash
             }
         });
 
