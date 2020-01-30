@@ -3,6 +3,7 @@ const localStrategy = require('passport-local').Strategy;
 const GooglePlusTokenStrategy = require('passport-google-plus-token');
 const FacebookTokenStrategy = require('passport-facebook-token');
 const GitHubTokenStrategy = require('passport-github-token');
+const BitbucketTokenStrategy = require('passport-bitbucket-token');
 const GitLabTokenStrategy = require('passport-gitlab-token').Strategy;
 const { ExtractJwt } = require('passport-jwt');
 const User = require('../models/User');
@@ -235,4 +236,43 @@ module.exports = (passport) => {
         }
     ));
 
+    // To authenticate the User by Bitbucket OAuth Strategy
+    passport.use('bitbucketToken', new GitLabTokenStrategy({
+        clientID: process.env.BITBUCKET_CLIENT_ID,
+        clientSecret: process.env.BITBUCKET_CLIENT_SECRET
+    },
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+
+                console.log(profile);
+                return;
+                
+                // Check whether this current user exists in our DB
+                const existingUser = await User.findOne({ 'bitbucket.id': profile.id })
+                if (existingUser) {
+                    console.log(`User already exists in our DB`);
+                    return done(null, existingUser);
+                }
+
+                console.log(`User doesn't exists, we're creating a new one`);
+
+                // If new account
+                const email = profile.email;
+
+                const newUser = new User({
+                    method: 'bitbucket',
+                    bitbucket: {
+                        id: profile.id,
+                        email: email
+                    }
+
+                });
+
+                await newUser.save();
+                done(null, newUser);
+            } catch (error) {
+                done(error, false, error.message);
+            }
+        }
+    ));
 }

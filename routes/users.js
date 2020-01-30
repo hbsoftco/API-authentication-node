@@ -13,6 +13,7 @@ const passportGoogleToken = passport.authenticate('googleToken', { session: fals
 const passportFacebookToken = passport.authenticate('facebookToken', { session: false });
 const passportGithubToken = passport.authenticate('githubToken', { session: false });
 const passportGitlabToken = passport.authenticate('gitlabToken', { session: false });
+const passportBitbucketToken = passport.authenticate('bitbucketToken', { session: false });
 
 // Validators
 const { signUpValidation, schema } = require('../validators/signUpValidator');
@@ -31,5 +32,6 @@ router.route('/oauth/google').post(passportGoogleToken, UserController.googleOAu
 router.route('/oauth/facebook').post(passportFacebookToken, UserController.facebookOAuth);
 router.route('/oauth/github').post(passportGithubToken, UserController.githubOAuth);
 router.route('/oauth/gitlab').post(passportGitlabToken, UserController.gitlabOAuth);
+router.route('/oauth/bitbucket').post(passportBitbucketToken, UserController.bitbucketOAuth);
 
 module.exports = router;
