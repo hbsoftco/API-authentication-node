@@ -25,6 +25,6 @@ router.route('/:id').put(UserController.update);
 router.route('/:id').delete(UserController.destroy);
 router.route('/signup').post(signUpValidation(schema.authSchema), UserController.signUp);
 router.route('/signin').post(signUpValidation(schema.authSchema), passportSignIn, UserController.signIn);
-router.route('/oauth/google').post(passportGoogleToken, UserController.google);
+router.route('/oauth/google').post(passportGoogleToken, UserController.googleOAuth);
 
 module.exports = router;

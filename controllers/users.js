@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
 const { secret } = require('../config/database');
 
 // const removeUser = () => {
@@ -29,6 +30,50 @@ const { secret } = require('../config/database');
 module.exports = {
     signUp: async (req, res, next) => {
 
+        const { email, password } = req.value.body;
+        // Check if there is a user with the same email
+        const fountUser = await User.findOne({ 'local.email': email });
+        if (fountUser) {
+            return res.status(403).json({
+                success: false,
+                message: 'User already exist!'
+            });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const passwprdHash = await bcrypt.hash(password, salt);
+        password = passwprdHash;
+
+        console.log(password);
+        return;
+
+
+        // Create new user
+        const newUser = new User({
+            method: 'local',
+            local: {
+                email: email,
+                password: password
+            }
+        });
+
+        await newUser.save();
+
+        // Generate token
+        const token = JWT.sign({
+            type: "user",
+            data: newUser
+        }, secret, {
+            expiresIn: 604800 // for 1 week timein milliseconds
+        });
+
+        return res.json({
+            success: true,
+            token: 'JWT ' + token,
+            message: "User registration successful."
+        })
+
+        /*
         let newUser = new User(
             { email, password } = req.value.body
         );
@@ -57,6 +102,7 @@ module.exports = {
                 })
             }
         });
+        */
     },
 
     signIn: async (req, res, next) => {
@@ -82,8 +128,22 @@ module.exports = {
         console.log('secret UserController');
     },
 
-    google: async (req, res, next) => {
-        res.json({ 'profile': req.body });
+    googleOAuth: async (req, res, next) => {
+
+        const user = req.user;
+
+        const token = JWT.sign({
+            type: "user",
+            data: user
+        }, secret, {
+            expiresIn: 604800 // for 1 week timein milliseconds
+        });
+
+        return res.json({
+            success: true,
+            token: 'JWT ' + token,
+            message: "User registration successful."
+        })
     },
 
     custom: async (req, res, next) => {

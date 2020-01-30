@@ -31,11 +31,41 @@ module.exports = (passport) => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         passReqToCallback: true
     }, async (req, accessToken, refreshToken, profile, done) => {
-        // console.log(req.body);
-        // console.log(accessToken);
-        // console.log(refreshToken);
-        // console.log(profile);
-        done(null, profile);
+        try {
+            // console.log(profile);
+            // return;
+
+            // Check whether this current user exists in our DB
+            const existingUser = await User.findOne({ 'google.id': profile.id })
+            if (existingUser) {
+                console.log(`User already exists in our DB`);
+                return done(null, existingUser);
+            }
+
+            console.log(`User doesn't exists, we're creating a new one`);
+
+            // If new account
+            const email = '';
+            if (profile.emails.length) {
+                email = profile.emails[0].value
+            }
+
+            const newUser = new User({
+                method: 'google',
+                google: {
+                    id: profile.id,
+                    email: email
+                }
+
+            });
+
+            await newUser.save();
+            done(null, newUser);
+        } catch (error) {
+            done(error, false, error.message);
+        }
+
+
     }));
 
 
@@ -45,9 +75,12 @@ module.exports = (passport) => {
 
     passport.use(new localStrategy(optsLocal,
         async (email, password, done) => {
+            console.log(email);
             try {
                 // Find the user given the email
-                const user = await User.findOne({ email });
+                const user = await User.findOne({ "local.email": email });
+                // For mysql
+                // const user = await User.findOne({ email });
 
                 // If not, handle it
                 if (!user) {
@@ -55,7 +88,10 @@ module.exports = (passport) => {
                 }
 
                 //////// old version
-                User.comparePassword(password, user.password, (err, isMatch) => {
+                User.comparePassword(password, user.local.password, (err, isMatch) => {
+
+                    console.log(isMatch);
+
                     if (err) throw err;
                     if (isMatch) {
                         done(null, user);
@@ -66,6 +102,7 @@ module.exports = (passport) => {
                         }
                     }
                 });
+
 
                 ////////////////// New method for future
 

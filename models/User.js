@@ -4,16 +4,45 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 //User Schema
 const UserSchema = mongoose.Schema({
-    email: {
+    method: {
         type: String,
-        unique: true,
-        index: true,
-        required: true
+        enum: ['local', 'google', 'facebook'],
+        required: true,
     },
-    password: {
-        type: String,
-        required: true
-    }
+    local: {
+        email: {
+            type: String,
+            // unique: true,
+            // index: true,
+            lowercase: true
+        },
+        password: {
+            type: String
+        }
+    },
+    google: {
+        id: {
+            type: String,
+        },
+        email: {
+            type: String,
+            // unique: true,
+            // index: true,
+            lowercase: true
+        }
+    },
+    facebook: {
+        id: {
+            type: String,
+        },
+        email: {
+            type: String,
+            // unique: true,
+            // index: true,
+            lowercase: true
+        }
+    },
+
 });
 
 UserSchema.plugin(uniqueValidator);
@@ -58,9 +87,9 @@ module.exports.getUserByUsername = (email, callback) => {
 // to register the user
 module.exports.addUser = (newUser, callback) => {
     bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
+        bcrypt.hash(newUser.local.password, salt, (err, hash) => {
             if (err) throw err;
-            newUser.password = hash;
+            newUser.local.password = hash;
             newUser.save(callback);
         });
     });
