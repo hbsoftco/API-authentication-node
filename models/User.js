@@ -6,7 +6,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 const UserSchema = mongoose.Schema({
     method: {
         type: String,
-        enum: ['local', 'google', 'facebook'],
+        enum: ['local', 'google', 'facebook', 'github'],
         required: true,
     },
     local: {
@@ -18,6 +18,17 @@ const UserSchema = mongoose.Schema({
         },
         password: {
             type: String
+        }
+    },
+    github: {
+        id: {
+            type: String,
+        },
+        email: {
+            type: String,
+            // unique: true,
+            index: true,
+            lowercase: true
         }
     },
     google: {

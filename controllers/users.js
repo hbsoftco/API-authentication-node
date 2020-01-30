@@ -41,7 +41,7 @@ module.exports = {
         }
 
         // Hash the password
-        const salt = await bcrypt.genSalt(10);        
+        const salt = await bcrypt.genSalt(10);
         const passwprdHash = await bcrypt.hash(password, salt);
 
         // Create new user
@@ -143,6 +143,24 @@ module.exports = {
     },
 
     facebookOAuth: async (req, res, next) => {
+
+        const user = req.user;
+
+        const token = JWT.sign({
+            type: "user",
+            data: user
+        }, secret, {
+            expiresIn: 604800 // for 1 week timein milliseconds
+        });
+
+        return res.json({
+            success: true,
+            token: 'JWT ' + token,
+            message: "User registration successful."
+        })
+    },
+
+    githubOAuth: async (req, res, next) => {
 
         const user = req.user;
 

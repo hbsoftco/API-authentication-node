@@ -1,7 +1,8 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const localStrategy = require('passport-local').Strategy;
-var GooglePlusTokenStrategy = require('passport-google-plus-token');
-var FacebookTokenStrategy = require('passport-facebook-token');
+const GooglePlusTokenStrategy = require('passport-google-plus-token');
+const FacebookTokenStrategy = require('passport-facebook-token');
+const GitHubTokenStrategy = require('passport-github-token');
 const { ExtractJwt } = require('passport-jwt');
 const User = require('../models/User');
 const { secret } = require('../config/database');
@@ -82,7 +83,7 @@ module.exports = (passport) => {
             }
 
             console.log(`User doesn't exists, we're creating a new one`);
-            
+
             // If new account
             const email = '';
             if (profile.emails[0].value !== '') {
@@ -106,6 +107,43 @@ module.exports = (passport) => {
         }
     }
     ));
+
+    // To authenticate the User by Facebook OAuth Strategy
+    passport.use('githubToken', new GitHubTokenStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        passReqToCallback: true
+    }, async (req, accessToken, refreshToken, profile, done) => {
+        try {
+
+            // Check whether this current user exists in our DB
+            const existingUser = await User.findOne({ 'github.id': profile.id })
+            if (existingUser) {
+                console.log(`User already exists in our DB`);
+                return done(null, existingUser);
+            }
+
+            console.log(`User doesn't exists, we're creating a new one`);
+                        
+            // If new account
+            const email = profile.emails[0].value;               
+
+            const newUser = new User({
+                method: 'github',
+                facebook: {
+                    id: profile.id,
+                    email: email
+                }
+
+            });
+
+            await newUser.save();
+            done(null, newUser);
+        } catch (error) {
+            done(error, false, error.message);
+        }
+
+    }));
 
 
     // To authenticate the User by local Strategy
