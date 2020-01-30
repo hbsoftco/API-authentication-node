@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const dotenv = require('dotenv').config()
 
 // Initialize the app
 const app = express();

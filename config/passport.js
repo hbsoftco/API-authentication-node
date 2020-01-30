@@ -27,15 +27,15 @@ module.exports = (passport) => {
 
     // To authenticate the User by Google OAuth Strategy
     passport.use('googleToken', new GooglePlusTokenStrategy({
-        clientID: '767437628371-ka5k3quks45lru8j1t28lrcla7o53hb2.apps.googleusercontent.com',
-        clientSecret: 'Fv49nwF9Yb-avUixFvGGfedK',
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         passReqToCallback: true
     }, async (req, accessToken, refreshToken, profile, done) => {
-        console.log(req.body);
-        console.log(accessToken);
-        console.log(refreshToken);
-        console.log(profile);
-
+        // console.log(req.body);
+        // console.log(accessToken);
+        // console.log(refreshToken);
+        // console.log(profile);
+        done(null, profile);
     }));
 
 

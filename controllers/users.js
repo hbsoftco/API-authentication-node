@@ -83,7 +83,7 @@ module.exports = {
     },
 
     google: async (req, res, next) => {
-        res.json({ 'msg': 'google UserController' });
+        res.json({ 'profile': req.body });
     },
 
     custom: async (req, res, next) => {
