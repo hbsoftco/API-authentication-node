@@ -142,6 +142,24 @@ module.exports = {
         })
     },
 
+    facebookOAuth: async (req, res, next) => {
+
+        const user = req.user;
+
+        const token = JWT.sign({
+            type: "user",
+            data: user
+        }, secret, {
+            expiresIn: 604800 // for 1 week timein milliseconds
+        });
+
+        return res.json({
+            success: true,
+            token: 'JWT ' + token,
+            message: "User registration successful."
+        })
+    },
+
     custom: async (req, res, next) => {
         let { name, priority, description, duedate } = req.body;
         try {

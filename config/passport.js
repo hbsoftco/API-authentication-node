@@ -1,6 +1,7 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const localStrategy = require('passport-local').Strategy;
 var GooglePlusTokenStrategy = require('passport-google-plus-token');
+var FacebookTokenStrategy = require('passport-facebook-token');
 const { ExtractJwt } = require('passport-jwt');
 const User = require('../models/User');
 const { secret } = require('../config/database');
@@ -32,8 +33,6 @@ module.exports = (passport) => {
         passReqToCallback: true
     }, async (req, accessToken, refreshToken, profile, done) => {
         try {
-            // console.log(profile);
-            // return;
 
             // Check whether this current user exists in our DB
             const existingUser = await User.findOne({ 'google.id': profile.id })
@@ -67,6 +66,46 @@ module.exports = (passport) => {
 
 
     }));
+
+    // To authenticate the User by Facebook OAuth Strategy
+    passport.use('facebookToken', new FacebookTokenStrategy({
+        clientID: process.env.FACEBOOK_APP_ID,
+        clientSecret: process.env.FACEBOOK_APP_SECRET
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+
+            // Check whether this current user exists in our DB
+            const existingUser = await User.findOne({ 'facebook.id': profile.id })
+            if (existingUser) {
+                console.log(`User already exists in our DB`);
+                return done(null, existingUser);
+            }
+
+            console.log(`User doesn't exists, we're creating a new one`);
+            
+            // If new account
+            const email = '';
+            if (profile.emails[0].value !== '') {
+                email = profile.emails[0].value
+            }
+
+
+            const newUser = new User({
+                method: 'facebook',
+                facebook: {
+                    id: profile.id,
+                    email: email
+                }
+
+            });
+
+            await newUser.save();
+            done(null, newUser);
+        } catch (error) {
+            done(error, false, error.message);
+        }
+    }
+    ));
 
 
     // To authenticate the User by local Strategy

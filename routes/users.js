@@ -7,10 +7,10 @@ const swaggerDocument = require('./swagger.json');
 router.use('/api-docs', swaggerUi.serve);
 router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
-
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 const passportGoogleToken = passport.authenticate('googleToken', { session: false });
+const passportFacebookToken = passport.authenticate('facebookToken', { session: false });
 
 // Validators
 const { signUpValidation, schema } = require('../validators/signUpValidator');
@@ -26,5 +26,6 @@ router.route('/:id').delete(UserController.destroy);
 router.route('/signup').post(signUpValidation(schema.authSchema), UserController.signUp);
 router.route('/signin').post(signUpValidation(schema.authSchema), passportSignIn, UserController.signIn);
 router.route('/oauth/google').post(passportGoogleToken, UserController.googleOAuth);
+router.route('/oauth/Facebook').post(passportFacebookToken, UserController.facebookOAuth);
 
 module.exports = router;
