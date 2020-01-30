@@ -10,6 +10,7 @@ router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
+const passportGoogleToken = passport.authenticate('googleToken', { session: false });
 
 // Validators
 const { signUpValidation, schema } = require('../validators/signUpValidator');
@@ -24,5 +25,6 @@ router.route('/:id').put(UserController.update);
 router.route('/:id').delete(UserController.destroy);
 router.route('/signup').post(signUpValidation(schema.authSchema), UserController.signUp);
 router.route('/signin').post(signUpValidation(schema.authSchema), passportSignIn, UserController.signIn);
+router.route('/oauth/google').post(passportGoogleToken, UserController.google);
 
 module.exports = router;

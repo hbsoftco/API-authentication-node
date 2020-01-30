@@ -82,6 +82,10 @@ module.exports = {
         console.log('secret UserController');
     },
 
+    google: async (req, res, next) => {
+        res.json({ 'msg': 'google UserController' });
+    },
+
     custom: async (req, res, next) => {
         let { name, priority, description, duedate } = req.body;
         try {
