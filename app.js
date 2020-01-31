@@ -62,6 +62,19 @@ require('./config/passport')(passport);
 app.use('/users', require('./routes/users'))
 
 // Start the server
-app.listen(PORT, () => {
-    console.log('Server run at http://localhost:5000');
-});
+// app.listen(PORT, () => {
+//     console.log('Server run at http://localhost:5000');
+// });
+
+// Run the server!
+const start = async () => {
+    try {
+        await app.listen(PORT);
+        console.log('Server run at http://localhost:5000');
+
+    } catch (err) {
+
+    }
+}
+
+start();
